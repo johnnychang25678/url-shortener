@@ -13,13 +13,13 @@ router.get('/', (req, res) => {
 router.post('/', async (req, res) => {
   const baseUrl = 'https://powerful-cliffs-44685.herokuapp.com/'
   const urlInput = req.body.url
-  let shortUrl = baseUrl + generateRandom(box, 5)
+  let shortUrl = generateRandom(box, 5)
   try {
     // check if the shortUrl exists in database, if yes, regenrate
     const findShortUrl = await Record.findOne({ newUrl: shortUrl })
     if (findShortUrl) {
       while (findShortUrl.newUrl === shortUrl) {
-        shortUrl = baseUrl + generateRandom(box, 5)
+        shortUrl = generateRandom(box, 5)
       }
     }
     // check if originalUrl exists in database, if yes, return the existed short url, if not, create one
