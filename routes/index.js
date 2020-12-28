@@ -5,13 +5,13 @@ const box = require('../utils/boxData') // array storing A~Z, a~z, 0~9
 const Record = require('../models/record')
 
 const generateRandom = require('../utils/generateRandom') // function to generate random string 
+const baseUrl = 'https://powerful-cliffs-44685.herokuapp.com/'
 
 router.get('/', (req, res) => {
   res.render('index')
 })
 
 router.post('/', async (req, res) => {
-  const baseUrl = 'https://powerful-cliffs-44685.herokuapp.com/'
   const urlInput = req.body.url
   let shortUrl = generateRandom(box, 5)
   try {
@@ -39,9 +39,19 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/:shortUrl', async (req, res) => {
-  const find = await Record.findOne({ newUrl: req.params.shortUrl })
-  const originalUrl = find.originalUrl
-  res.redirect(originalUrl)
+  try {
+    const findRecord = await Record.findOne({ newUrl: req.params.shortUrl })
+    if (findRecord) {
+      const originalUrl = findRecord.originalUrl
+      res.redirect(originalUrl)
+    } else {
+      const alert = baseUrl + req.params.shortUrl
+      res.render('index', { alert }) // show alert if user enters wrong url
+    }
+  } catch (err) {
+    console.log(err)
+  }
+
 })
 
 module.exports = router
