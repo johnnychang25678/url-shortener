@@ -13,8 +13,15 @@ router.get('/', (req, res) => {
 
 router.post('/', async (req, res) => {
   const urlInput = req.body.url
-  let shortUrl = generateRandom(box, 5)
+
   try {
+    // check if originalUrl exists in database, if yes, return the existed short url, if not, create one
+    const findOriginalUrl = await Record.findOne({ originalUrl: urlInput })
+    if (findOriginalUrl) {
+      return res.render('index', { newUrl: baseUrl + findOriginalUrl.newUrl })
+    }
+
+    let shortUrl = generateRandom(box, 5)
     // check if the shortUrl exists in database, if yes, regenrate
     const findShortUrl = await Record.findOne({ newUrl: shortUrl })
     if (findShortUrl) {
@@ -22,17 +29,13 @@ router.post('/', async (req, res) => {
         shortUrl = generateRandom(box, 5)
       }
     }
-    // check if originalUrl exists in database, if yes, return the existed short url, if not, create one
-    const findOriginalUrl = await Record.findOne({ originalUrl: urlInput })
-    if (findOriginalUrl) {
-      return res.render('index', { newUrl: baseUrl + findOriginalUrl.newUrl })
-    }
-
+    // create a record
     const create = await Record.create({ originalUrl: urlInput, newUrl: shortUrl })
     return res.render('index', { newUrl: baseUrl + create.newUrl })
 
   } catch (err) {
     console.log(err)
+    return res.render('error', { errorMessage: err })
   }
 
 
