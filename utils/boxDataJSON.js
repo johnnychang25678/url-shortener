@@ -12,4 +12,4 @@ for (let i = 0; i <= 9; i++) {
   box.push(i.toString())
 }
 
-module.exports = box
+console.log(JSON.stringify(box)) // output to JSON file

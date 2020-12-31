@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const box = require('../utils/boxData') // array storing A~Z, a~z, 0~9
+const box = require('../utils/boxData.json') // array storing A~Z, a~z, 0~9
 const Record = require('../models/record')
 
 const generateRandom = require('../utils/generateRandom') // function to generate random string 
@@ -9,6 +9,7 @@ const baseUrl = 'https://powerful-cliffs-44685.herokuapp.com/'
 
 router.get('/', (req, res) => {
   res.render('index')
+  console.log(box)
 })
 
 router.post('/', async (req, res) => {
